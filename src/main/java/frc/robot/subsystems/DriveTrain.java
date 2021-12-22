@@ -124,7 +124,7 @@ public class DriveTrain extends SubsystemBase {
         return navXAhrs.getAngle();
     }
 
-    public void setPidOfMotor(){
+    public void configLeftPid(){
         leftMaster.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Absolute,
                                             Constants.kPIDLoopIdx,
                                             Constants.kTimeoutMs);
@@ -145,6 +145,7 @@ public class DriveTrain extends SubsystemBase {
 		leftMaster.config_kI(Constants.kPIDLoopIdx, Constants.kGains.kI, Constants.kTimeoutMs);
 		leftMaster.config_kD(Constants.kPIDLoopIdx, Constants.kGains.kD, Constants.kTimeoutMs);
 
+    
     }
 
     public void setVelo(int st){

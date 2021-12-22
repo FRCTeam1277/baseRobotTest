@@ -40,14 +40,12 @@ public class DriveForward extends CommandBase
   @Override
   public void initialize() {
     stabalizeEncoders.setSetpoint(0);
-    driveTrain.setPidOfMotor();
+    driveTrain.configLeftPid();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    driveTrain.setVelo(400);
-    
+  public void execute() {    
    
   }
 
