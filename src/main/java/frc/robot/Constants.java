@@ -28,7 +28,7 @@ public class Constants {
     *   public static final int kRightMotor2Port = 3; 
     * }
     */ 
-    public static int kTimeoutMs = 30; //don't mess with this
+    public static int kTimeoutMs = 0; //don't mess with this
     public static int kPIDLoopIdx =0;
 
     //modify this! Order is: kP kI kF kIZone, kPeakOut; last two I don't know what they are

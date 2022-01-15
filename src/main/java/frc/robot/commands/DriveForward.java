@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.*;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -20,7 +21,7 @@ import frc.robot.subsystems.DriveTrain;
 public class DriveForward extends CommandBase
 {
   
-  private DriveTrain driveTrain;
+  public DriveTrain driveTrain;
   private PIDController stabalizeEncoders;
   private double distanceGoal;
   private double normalSpeed = 0.5;
@@ -39,14 +40,17 @@ public class DriveForward extends CommandBase
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    stabalizeEncoders.setSetpoint(0);
     driveTrain.configLeftPid();
+    driveTrain.setPosPID(5);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {    
-   
+  public void execute() {
+    driveTrain.setPosPID(2500); 
+    System.out.println(driveTrain.getLeftEncoder());  
+    System.out.println(driveTrain.leftMaster.getMotorOutputPercent()); //ik ik bad
+    SmartDashboard.putNumber("smth",driveTrain.getLeftEncoder());
   }
 
   // Called once the command ends or is interrupted.

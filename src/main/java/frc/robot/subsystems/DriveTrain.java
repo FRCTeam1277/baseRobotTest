@@ -128,7 +128,8 @@ public class DriveTrain extends SubsystemBase {
         leftMaster.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Absolute,
                                             Constants.kPIDLoopIdx,
                                             Constants.kTimeoutMs);
-                                            
+
+        
         // leftMaster.setSensorPhase(Constants.kSensorPhase); i// n case of inverted movement
 
         // leftMaster.setInverted(Constants.kMotorInvert); //^^
@@ -138,17 +139,18 @@ public class DriveTrain extends SubsystemBase {
 		leftMaster.configPeakOutputForward(1, Constants.kTimeoutMs);
 		leftMaster.configPeakOutputReverse(-1, Constants.kTimeoutMs);
         
-        leftMaster.configAllowableClosedloopError(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
+        leftMaster.configAllowableClosedloopError(Constants.kPIDLoopIdx,50, Constants.kTimeoutMs);
 
         leftMaster.config_kF(Constants.kPIDLoopIdx, Constants.kGains.kF, Constants.kTimeoutMs);
 		leftMaster.config_kP(Constants.kPIDLoopIdx, Constants.kGains.kP, Constants.kTimeoutMs);
 		leftMaster.config_kI(Constants.kPIDLoopIdx, Constants.kGains.kI, Constants.kTimeoutMs);
 		leftMaster.config_kD(Constants.kPIDLoopIdx, Constants.kGains.kD, Constants.kTimeoutMs);
 
-    
     }
 
-    public void setVelo(int st){
-        leftMaster.configMotionCruiseVelocity(st);
+
+    public void setPosPID(double st){
+        leftMaster.set(ControlMode.Position, st);
+
     }
 }
