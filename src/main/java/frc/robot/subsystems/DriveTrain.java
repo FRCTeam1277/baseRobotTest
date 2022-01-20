@@ -75,6 +75,7 @@ public class DriveTrain extends SubsystemBase {
         leftMaster = new WPI_TalonSRX(4);
 
         rightMaster = new WPI_TalonSRX(2);
+        
         l2.follow(leftMaster);
         l3.follow(leftMaster);
         r2.follow(rightMaster);
@@ -85,6 +86,7 @@ public class DriveTrain extends SubsystemBase {
         differentialDrive1.setSafetyEnabled(true);
         differentialDrive1.setExpiration(0.1);
         differentialDrive1.setMaxOutput(1.0);
+
 
         navXAhrs = new AHRS();
     }
@@ -109,7 +111,7 @@ public class DriveTrain extends SubsystemBase {
 
 	public void updateMotors(double left, double right) {
         leftMaster.set(left);
-        rightMaster.set(right);
+        rightMaster.set(-right); //right is reversed :/
     }
 
     public int getLeftEncoder(){
@@ -120,37 +122,17 @@ public class DriveTrain extends SubsystemBase {
         return rightMaster.getSensorCollection().getQuadraturePosition();
     }
 
+    public void resetEncoders() {
+        leftMaster.getSensorCollection().setQuadraturePosition(0, 0);
+        rightMaster.getSensorCollection().setQuadraturePosition(0, 0);
+
+    }
+
     public double getGyro() {
         return navXAhrs.getAngle();
     }
 
-    public void configLeftPid(){
-        leftMaster.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Absolute,
-                                            Constants.kPIDLoopIdx,
-                                            Constants.kTimeoutMs);
-
-        
-        // leftMaster.setSensorPhase(Constants.kSensorPhase); i// n case of inverted movement
-
-        // leftMaster.setInverted(Constants.kMotorInvert); //^^
-
-        leftMaster.configNominalOutputForward(0, Constants.kTimeoutMs);
-		leftMaster.configNominalOutputReverse(0, Constants.kTimeoutMs);
-		leftMaster.configPeakOutputForward(1, Constants.kTimeoutMs);
-		leftMaster.configPeakOutputReverse(-1, Constants.kTimeoutMs);
-        
-        leftMaster.configAllowableClosedloopError(Constants.kPIDLoopIdx,50, Constants.kTimeoutMs);
-
-        leftMaster.config_kF(Constants.kPIDLoopIdx, Constants.kGains.kF, Constants.kTimeoutMs);
-		leftMaster.config_kP(Constants.kPIDLoopIdx, Constants.kGains.kP, Constants.kTimeoutMs);
-		leftMaster.config_kI(Constants.kPIDLoopIdx, Constants.kGains.kI, Constants.kTimeoutMs);
-		leftMaster.config_kD(Constants.kPIDLoopIdx, Constants.kGains.kD, Constants.kTimeoutMs);
-
-    }
-
-
-    public void setPosPID(double st){
-        leftMaster.set(ControlMode.Position, st);
-
+    public void resetGyro(){
+        navXAhrs.reset();
     }
 }

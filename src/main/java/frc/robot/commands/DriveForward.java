@@ -22,7 +22,7 @@ public class DriveForward extends CommandBase
 {
   
   public DriveTrain driveTrain;
-  private PIDController stabalizeEncoders;
+  private PIDController pid;
   private double distanceGoal;
   private double normalSpeed = 0.5;
   private double kMeterToEncoder = 0; //good luck with this
@@ -31,7 +31,7 @@ public class DriveForward extends CommandBase
     
     this.driveTrain = driveTrain;
     this.distanceGoal = distance;
-    stabalizeEncoders = new PIDController(-.005, 0.0, 0);
+    pid = new PIDController(0.00025,0.0002,0);
 
     addRequirements(driveTrain);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -40,17 +40,18 @@ public class DriveForward extends CommandBase
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveTrain.configLeftPid();
-    driveTrain.setPosPID(5);
+    pid.setSetpoint(10000);
+    pid.setTolerance(100);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    driveTrain.setPosPID(2500); 
-    System.out.println(driveTrain.getLeftEncoder());  
-    System.out.println(driveTrain.leftMaster.getMotorOutputPercent()); //ik ik bad
-    SmartDashboard.putNumber("smth",driveTrain.getLeftEncoder());
+    double calc = pid.calculate(driveTrain.getLeftEncoder());
+    calc = calc/2;
+    //calc = (1.5/Math.PI) * Math.atan(calc/100);
+    System.out.println(driveTrain.getLeftEncoder());
+    driveTrain.updateMotors(calc, 0);
   }
 
   // Called once the command ends or is interrupted.

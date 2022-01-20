@@ -9,50 +9,53 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
 
 public class Rotate extends CommandBase {
-
-  private DriveTrain driveTrain;
-  private PIDController pidController;
-  private double targetRot; //in degrees
-
+  DriveTrain driveTrain;
+  PIDController controller;
+  double target;
   /** Creates a new Rotate. */
-  public Rotate(DriveTrain driveTrain, double targetRot) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.driveTrain = driveTrain;
-    this.targetRot = targetRot;
-    pidController = new PIDController(-.005, 0.0, 0);
-
-    addRequirements(driveTrain);
+  public Rotate(DriveTrain dt) {
+    driveTrain =dt;
+    addRequirements(dt);
+    controller = new PIDController(0.01, 0,0);
+    
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    pidController.setSetpoint(targetRot);
-    pidController.setTolerance(20);
+    driveTrain.resetGyro();
+    driveTrain.resetEncoders();
+    controller.setSetpoint(0);
+    // target = driveTrain.getGyro() + 90;
+
   }
 
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double leftSpeed = pidController.calculate(driveTrain.getLeftEncoder());
-    double rightSpeed = pidController.calculate(driveTrain.getRightEncoder());
+    //double out = -controller.calculate((driveTrain.getGyro()-target+180)%360 - 180);
+    double l = 0.2;
+    double out = controller.calculate(driveTrain.getGyro());
+    out = Math.min(Math.max(out, -l), l);
+    driveTrain.updateMotors(0.4+out, 0.4+-out);
+    System.out.println();
+    System.out.println(out);
+    System.out.println(driveTrain.getLeftEncoder());
+    System.out.println(driveTrain.getRightEncoder());
 
-    driveTrain.updateMotors(leftSpeed,rightSpeed);
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveTrain.updateMotors(0,0);
+    driveTrain.updateMotors(0, 0);
+    driveTrain.resetEncoders();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pidController.atSetpoint();
+    return (driveTrain.getLeftEncoder()-driveTrain.getRightEncoder())/2 > 100000;
   }
-}
-
-enum RotDirection {
-  left,
-  right
 }
