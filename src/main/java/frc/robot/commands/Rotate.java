@@ -9,13 +9,18 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
 
 public class Rotate extends CommandBase {
+  double distance;
+  double distancePerTick;
   DriveTrain driveTrain;
   PIDController controller;
   double target;
   /** Creates a new Rotate. */
-  public Rotate(DriveTrain dt) {
+  public Rotate(DriveTrain dt, double distInches) {
     driveTrain =dt;
     addRequirements(dt);
+    distancePerTick = Math.PI*8/4096;
+    distance = distInches/distancePerTick;
+
     controller = new PIDController(0.01, 0,0);
     
   }
@@ -36,6 +41,7 @@ public class Rotate extends CommandBase {
     //double out = -controller.calculate((driveTrain.getGyro()-target+180)%360 - 180);
     double l = 0.2;
     double out = controller.calculate(driveTrain.getGyro());
+    //arcade drive thing fix later
     out = Math.min(Math.max(out, -l), l);
     driveTrain.updateMotors(0.4+out, 0.4+-out);
     System.out.println();
@@ -56,6 +62,6 @@ public class Rotate extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (driveTrain.getLeftEncoder()-driveTrain.getRightEncoder())/2 > 100000;
+    return (driveTrain.getLeftEncoder()-driveTrain.getRightEncoder())/2 > distance;
   }
 }
