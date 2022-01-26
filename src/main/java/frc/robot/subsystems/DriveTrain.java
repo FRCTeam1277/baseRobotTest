@@ -21,6 +21,7 @@ import java.util.ResourceBundle.Control;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.Faults;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice;
@@ -94,6 +95,10 @@ public class DriveTrain extends SubsystemBase {
         l3.follow(leftMaster);
         r2.follow(rightMaster);
         r3.follow(rightMaster);
+
+        //Set neutral mode
+        leftMaster.setNeutralMode(NeutralMode.Brake);
+        rightMaster.setNeutralMode(NeutralMode.Brake);
         
         differentialDrive1 = new DifferentialDrive(leftMaster, rightMaster);
         addChild("Differential Drive 1", differentialDrive1);
